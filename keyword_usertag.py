@@ -142,7 +142,7 @@ def main_update_subscriber_usertag(web_id, date, is_UTC0, jump2gcp, expired_day,
 
     # ## drop unuse columns and drop duplicates, and save to db
     df_map_save = df_map.drop(columns=['news', 'keywords']).drop_duplicates(subset=['web_id','usertag','uuid','article_id'])
-    MySqlHelper.ExecuteUpdatebyChunk(df_map_save, db='missioner', table='usertag', chunk_size=100000, is_ssh=jump2gcp)
+    MySqlHelper.ExecuteUpdatebyChunk(df_map_save, db='missioner', table='test_usertag', chunk_size=100000, is_ssh=jump2gcp)
     ## delete expired data
     # delete_expired_rows(web_id, table='usertag', is_UTC0=is_UTC0, jump2gcp=jump2gcp)
     ### prepare keyword_usertag_report
@@ -168,12 +168,12 @@ if __name__ == '__main__':
     stopwords_usertag = jieba_base.read_file('./jieba_based/stop_words_usertag.txt')
 
     web_id_all, expired_day_all = fetch_usertag_web_id_ex_day()
-    # web_id_all = ['btnet']
-    # expired_day_all = [4]
+    web_id_all = ['cmoney','babyhome']
+    expired_day_all = [4,4]
     ## get expired_date
     for date in date_list:
         for web_id, expired_day in zip(web_id_all, expired_day_all):
-            main_update_subscriber_usertag(web_id, date, is_UTC0, jump2gcp, expired_day, jieba_base, stopwords, stopwords_usertag)
+            df_map_save, df_freq_token = main_update_subscriber_usertag(web_id, date, is_UTC0, jump2gcp, expired_day, jieba_base, stopwords, stopwords_usertag)
 
 
 

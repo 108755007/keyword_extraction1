@@ -13,8 +13,8 @@ class keyword_usertag_sorting():
 
         :param  web_id              (str)       web_id
         :param  uuidData            (dict)      Descirbe the uuid's keywords data (key: uuid)
-                viewArticles        (int)       The amount of article the user view.
-                keywordList         (list)      List storage the uuid's keywords (unsorted).
+            ├── viewArticles        (int)       The amount of article the user view.
+            └── keywordList         (list)      List storage the uuid's keywords (unsorted).
         :param  keyowrdLimit        (int)       The number of keywords want the reserve.
         :param  challengeNum        (int)       The number of abandon keywords want to challenge
         """
@@ -84,8 +84,8 @@ class keyword_usertag_sorting():
         # 2. Merge with existed uuid keywords and frequencies.
 
         :param uuidData         (dict)      Descirbe the uuid's keywords data (key: uuid)
-               keywordList      (list)      List storage the uuid's keywords.
-               keywordFreq      (list)      List storage frequency corresponding uuid's keywords. (len(keywordList)==len(keywordFreq))
+            ├──keywordList      (list)      List storage the uuid's keywords.
+            └──keywordFreq      (list)      List storage frequency corresponding uuid's keywords. (len(keywordList)==len(keywordFreq))
         """
         invalidUUIDs = []
         for uuid in self.uuidData:

@@ -112,6 +112,7 @@ class MySqlHelper:
                 conn.commit()
         except Exception as e:
             self.logger.info(e)
+        self.sql_connector.get_session().get_bind().close()
         self.sql_connector.get_session().close()
         # count = 0
         # try:
@@ -121,6 +122,17 @@ class MySqlHelper:
         #     self.logger.info(e)
         #     self.sql_connector.get_session().rollback()
         # return count
+
+    def ExecuteSelectDict(self, *entities, **kwargs):
+        '''
+            Input : Select sentence and value
+            Output: The dictionary type data with columns key.
+        '''
+        result = self.sql_connector.execute_raw_sql(*entities, **kwargs)
+        data = result.fetchall()
+        self.sql_connector.get_session().get_bind().close()
+        self.sql_connector.get_session().close()
+        return [dict(rawdata) for rawdata in data]
 
     def ExecuteSelect(self, *entities, **kwargs):
         '''

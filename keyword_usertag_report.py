@@ -1,5 +1,7 @@
 import pandas as pd
 from db.mysqlhelper import MySqlHelper
+from db import DBhelper
+
 from media.Media import Media
 from basic.date import get_date_shift, datetime_to_str, get_yesterday, to_datetime, get_today
 from basic.decorator import timing
@@ -82,18 +84,23 @@ def keyword_usertag_report(web_id, expired_date=None, usertag_table='usertag', r
     df_freq_token[['term_freq', 'token_count', 'uuid_count']] = df_freq_token[
         ['term_freq', 'token_count', 'uuid_count']].astype('int')
     ## save to db, clean_df(*args, df_search, columns, columns_drop, columns_rearrange)
-    query = f"REPLACE INTO {report_table} (web_id, usertag, term_freq, token_count, uuid_count, expired_date) VALUES (:web_id, :usertag, :term_freq, :token_count, :uuid_count, :expired_date)"
-    MySqlHelper('missioner', is_ssh=jump2gcp).ExecuteUpdate(query, df_freq_token.to_dict('records'))
+    # query = f"REPLACE INTO {report_table} (web_id, usertag, term_freq, token_count, uuid_count, expired_date) VALUES (:web_id, :usertag, :term_freq, :token_count, :uuid_count, :expired_date)"
+    #query = DBhelper.generate_update_SQLquery(df_freq_token, report_table)
+
+    #MySqlHelper('missioner', is_ssh=jump2gcp).ExecuteUpdate(query, df_freq_token.to_dict('records'))
+
+    MySqlHelper('missioner', is_ssh=jump2gcp).ExecuteUpdatebyChunk(df_freq_token, db='missioner',
+                                                                   table='test_usertag_report', chunk_size=100000, is_ssh=jump2gcp)
     ## delete expired data
-    delete_expired_rows(web_id, table='usertag_report', jump2gcp=jump2gcp)
+    # delete_expired_rows(web_id, table='usertag_report', jump2gcp=jump2gcp)
     return df_freq_token
 
 
 if __name__ == '__main__':
-    web_id_all = Media().fetch_web_id()
-    # web_id_all = ['pixnet']
+    # web_id_all = Media().fetch_web_id()
+    web_id_all = ['cmoney']
     for web_id in web_id_all:
-        keyword_usertag_report(web_id, usertag_table='usertag', report_table='usertag_report', jump2gcp=True)
+        df_freq_token = keyword_usertag_report(web_id, usertag_table='test_usertag', report_table='test_usertag_report', jump2gcp=True)
 
 
     # t_start = time.time()
