@@ -6,7 +6,7 @@ from jieba_based import Composer_jieba
 from keyword_usertag_report import keyword_usertag_report, delete_expired_rows
 import jieba.analyse
 
-#####test
+#####test#####
 @timing
 def fetch_usertag_web_id_ex_day():
     query = "SELECT web_id, usertag_keyword_expired_day FROM web_id_table where usertag_keyword_enable=1"
